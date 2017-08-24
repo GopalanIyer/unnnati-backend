@@ -216,24 +216,6 @@ $app->post('/permatraining', function($request, $response) {
     return $response;
 });
 
-
-//get details from enquiry
-$app->get('/enquiry/{id}', function($request, $response) {
-     $id = $request->getAttribute('id');
-
-    $enquiry = \EnquiryForm::find($id);
-    // $details = \ExamRecieptTemp::orderBy('id', 'desc')->get();
-    if($enquiry)
-    {
-        $response->getBody()->write($enquiry->toJson());
-    }
-    else
-    {
-        // $response
-    }
-    return $response;
-});
-
 // GET details for enquiry
 $app->get('/enquiry', function($request, $response) {
     // $id = $request->getAttribute('id');
@@ -489,7 +471,7 @@ $app->post('/login', function($request, $response) {
     }
     else
     {
-        $response->getBody()->write('{"status": 404, "message": "Not found"}');
+        $response->getBody()->write('{"status": 404, "message": "Username or Password Incorrect"}');
 
         // $response
     }
@@ -537,4 +519,39 @@ $app->post('/changepassword', function($request, $response) {
     return $response;
 });
 
+//GET for all
+$app->get('/report', function($request, $response) {
+    $rpt=array();
+//get permaexam
+    $id = $request->getAttribute('id');
+
+    $permaexam = \ExamReciept::orderBy('id', 'desc')->get();
+    // $details = \ExamRecieptTemp::orderBy('id', 'desc')->get();
+    if($permaexam)
+    {
+        $rpt["permaexam"] = $permaexam;
+        
+        // $response->getBody()->write('{"status": 200, "message": ""}');
+    }
+    else
+    {
+     $rpt["permaexam"] = array('status'=>404, 'message'=>"No such data available");
+   
+    }
+//get perma training
+    $id = $request->getAttribute('id');
+
+    $permatraining = \TrainingReciept::orderBy('id','desc')->get();
+    // $details = \ExamRecieptTemp::orderBy('id', 'desc')->get();
+    if($permatraining)
+    {
+        $rpt["permatraining"] = $permatraining;
+        // 
+    }
+    else
+    {
+        // $response
+    }
+    return $response->withJson($rpt, 200);
+});
 ?>
