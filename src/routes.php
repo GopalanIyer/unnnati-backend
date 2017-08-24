@@ -9,7 +9,7 @@ require '../models/StudentForm.php';
 require '../models/TaskTab.php';
 require '../models/SignUp.php';
 
-// GET details
+// GET details for temp exam
 $app->get('/tempexam', function($request, $response) {
     // $id = $request->getAttribute('');
 
@@ -27,7 +27,7 @@ $app->get('/tempexam', function($request, $response) {
 });
 
 
-// Post details
+// Post details for temp exam
 $app->post('/tempexam', function($request, $response) {
    
     $json = $request->getBody();
@@ -54,7 +54,7 @@ $app->post('/tempexam', function($request, $response) {
 
     return $response;
 });
-//delete temp
+//delete temp exam
 $app->delete('/tempexam/{id}', function($request, $response, $args) {
    
         $id = $request->getAttribute('id');
@@ -66,11 +66,14 @@ $app->delete('/tempexam/{id}', function($request, $response, $args) {
             return $response;
       
 });
-// GET details
+// GET details temp training
 $app->get('/temptraining', function($request, $response) {
     // $id = $request->getAttribute('id');
-
+   
     $temptraining = \TrainingRecieptTemp::get();
+    //  $amount= $request->getAttribute('amount');
+    // $total_fees_paid=$total_fees_paid+$amount;
+    // echo $total_fees_paid;
     // $details = \ExamRecieptTemp::orderBy('id', 'desc')->get();
     if($temptraining)
     {
@@ -84,7 +87,7 @@ $app->get('/temptraining', function($request, $response) {
 });
 
 
-// Post details
+// Post details temp training
 $app->post('/temptraining', function($request, $response) {
    
     $json = $request->getBody();
@@ -111,7 +114,7 @@ $app->post('/temptraining', function($request, $response) {
 
     return $response;
 });
-
+// get perma exam
 $app->get('/permaexam', function($request, $response) {
     // $id = $request->getAttribute('id');
 
@@ -129,7 +132,7 @@ $app->get('/permaexam', function($request, $response) {
     return $response;
 });
 
-//post details to permanent table
+//post details to permanent exam
 $app->post('/permaexam', function($request, $response) {
     
     $json = $request->getBody();
@@ -231,6 +234,22 @@ $app->get('/enquiry/{id}', function($request, $response) {
     return $response;
 });
 
+// GET details for enquiry
+$app->get('/enquiry', function($request, $response) {
+    // $id = $request->getAttribute('id');
+
+     $enquiry = \EnquiryForm::get();
+    
+    if($enquiry)
+    {
+        $response->getBody()->write($enquiry->toJson());
+    }
+    else
+    {
+        // $response
+    }
+    return $response;
+});
 //post for enquiry
 $app->post('/enquiry', function($request, $response) {
     $json = $request->getBody();
@@ -297,7 +316,7 @@ $app->post('/salary', function($request, $response) {
     return $response;
 });
 
-//post for salary
+//put for salary
 $app->put('/salary', function($request, $response) {
     $json = $request->getBody();
     // echo $json;
@@ -475,95 +494,6 @@ $app->post('/login', function($request, $response) {
         // $response
     }
     return $response;
-});
-
-
-// GET for all
-$app->get('/report', function($request, $response) {
-    $rpt=array();
-//get permaexam
-    $id = $request->getAttribute('id');
-
-    $permaexam = \ExamReciept::orderBy('id', 'desc')->get();
-    // $details = \ExamRecieptTemp::orderBy('id', 'desc')->get();
-    if($permaexam)
-    {
-        $rpt["permaexam"] = $permaexam;
-        // $response->getBody()->write('{"status": 200, "message": ""}');
-    }
-    else
-    {
-     $rpt["permaexam"] = array('status'=>404, 'message'=>"No such data available");
-       
-    }
-//get perma training
-    $id = $request->getAttribute('id');
-
-    $permatraining = \TrainingReciept::orderBy('id','desc')->get();
-    // $details = \ExamRecieptTemp::orderBy('id', 'desc')->get();
-    if($permatraining)
-    {
-        $rpt["permatraining"] = $permatraining;
-    }
-    else
-    {
-        // $response
-    }
-//get enquiry
-    $id = $request->getAttribute('id');
-
-    $enquiry = \EnquiryForm::find($id);
-    // $details = \ExamRecieptTemp::orderBy('id', 'desc')->get();
-    if($enquiry)
-    {
-       $rpt["enquiry"] = $enquiry;
-    }
-    else
-    {
-        // $response
-    }
-//get salary
-    $salary = \Salary::get();
-   
-    if($salary)
-    {
-       $rpt["salary"] = $salary;
-       
-    }
-    else
-    {
-        // $response
-    }
-    
-//get student form
-
-    $studform = \StudentForm::get();
-    // $details = \ExamRecieptTemp::orderBy('id', 'desc')->get();
-    if($studform)
-    {
-       $rpt["studform"] = $studform;
-        
-    }
-    else
-    {
-        // $response
-    }
-
-//get task
-
-    // $id = $request->getAttribute('id');
-
-     $tasktab = \TaskTab::get();
-    
-    if($tasktab)
-    {
-        $rpt["tasktab"] = $tasktab;
-    }
-    else
-    {
-        // $response
-    }
-    return $response->withJson($rpt, 200);
 });
 
 //post for change password
