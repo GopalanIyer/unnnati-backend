@@ -66,27 +66,45 @@ $app->delete('/tempexam/{id}', function($request, $response, $args) {
             return $response;
       
 });
-// GET details temp training
-$app->get('/temptraining', function($request, $response) {
-    // $id = $request->getAttribute('id');
+// GET details for balance fees from perma training
+$app->get('/permatraining/{student_name}', function($request, $response) {
+     $name = $request->getAttribute('student_name');
    
-    $temptraining = \TrainingRecieptTemp::get();
-    //  $amount= $request->getAttribute('amount');
-    // $total_fees_paid=$total_fees_paid+$amount;
-    // echo $total_fees_paid;
-    // $details = \ExamRecieptTemp::orderBy('id', 'desc')->get();
-    if($temptraining)
+    $student=\TrainingReciept::where('student_name',$name)->first();
+
+   
+    if($student)
     {
-        $response->getBody()->write($temptraining->toJson());
+        $total_fees=$student['total_fees'];
+        $total_fees_paid=$student['total_fees_paid'];
+        $balance_fees=$total_fees-$total_fees_paid;
+        $student['balance_fees'] = $balance_fees;
+        return $response->withJson($student);
     }
     else
     {
         // $response
+        return $response->withJson(array('error'=>'Student not found'));
     }
-    return $response;
 });
 
 
+//Get for temp training
+$app->get('/temptraining', function($request, $response) {
+    
+    $temptraining = \TrainingRecieptTemp::get();
+    
+    if($temptraining)
+    {
+        $response->getBody()->write($temptraining->toJson());
+       
+    }
+    else
+    {
+       $response->getBody()->write('{"status": 404, "message": "No such data available"}');
+    }
+    return $response;
+});
 // Post details temp training
 $app->post('/temptraining', function($request, $response) {
    
@@ -114,16 +132,39 @@ $app->post('/temptraining', function($request, $response) {
 
     return $response;
 });
+// GET details for balance fees from perma exam
+$app->get('/permaexam/{student_name}', function($request, $response) {
+     $name = $request->getAttribute('student_name');
+   
+    $student=\ExamReciept::where('student_name',$name)->first();
+
+   
+    if($student)
+    {
+        $total_fees=$student['total_fees'];
+        $total_fees_paid=$student['total_fees_paid'];
+        $balance_fees=$total_fees-$total_fees_paid;
+        $student['balance_fees'] = $balance_fees;
+        return $response->withJson($student);
+    }
+    else
+    {
+        // $response
+        return $response->withJson(array('error'=>'Student not found'));
+    }
+});
+
+
 // get perma exam
 $app->get('/permaexam', function($request, $response) {
     // $id = $request->getAttribute('id');
 
     $permaexam = \ExamReciept::get();
-    // $details = \ExamRecieptTemp::orderBy('id', 'desc')->get();
+    
     if($permaexam)
     {
         $response->getBody()->write($permaexam->toJson());
-        // $response->getBody()->write('{"status": 200, "message": ""}');
+       
     }
     else
     {
@@ -218,10 +259,8 @@ $app->post('/permatraining', function($request, $response) {
 
 // GET details for enquiry
 $app->get('/enquiry', function($request, $response) {
-    // $id = $request->getAttribute('id');
-
-     $enquiry = \EnquiryForm::get();
     
+     $enquiry = \EnquiryForm::get();
     if($enquiry)
     {
         $response->getBody()->write($enquiry->toJson());
