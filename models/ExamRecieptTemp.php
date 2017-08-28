@@ -13,6 +13,7 @@ class ExamRecieptTemp extends \Illuminate\Database\Eloquent\Model {
         'amount',
         'total_fees_paid',
         'total_fees',
+        'balance_fees',
         'mode',
         'cheque_no',
         'bank',
