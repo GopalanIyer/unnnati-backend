@@ -8,7 +8,8 @@ class StudentForm extends \Illuminate\Database\Eloquent\Model {
         'email_id',
         'course',
         'branch',
-        'total_fees',
+        'exam_total_fees',
+        'training_total_fees',
         'current_date',
         'active',
         

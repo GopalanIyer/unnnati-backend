@@ -11,7 +11,7 @@ class TrainingReciept extends \Illuminate\Database\Eloquent\Model {
         'current_date',
         'amount',
         'total_fees_paid',
-        'total_fees',
+        'training_total_fees',
         'balance_fees',
         'mode',
         'cheque_no',

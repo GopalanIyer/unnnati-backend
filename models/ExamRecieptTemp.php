@@ -12,7 +12,7 @@ class ExamRecieptTemp extends \Illuminate\Database\Eloquent\Model {
         'current_date',
         'amount',
         'total_fees_paid',
-        'total_fees',
+        'exam_total_fees',
         'balance_fees',
         'mode',
         'cheque_no',

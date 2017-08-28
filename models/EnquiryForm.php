@@ -10,7 +10,8 @@ class EnquiryForm extends \Illuminate\Database\Eloquent\Model {
         'course',
         'source',
         'branch',
-        'total_fees',
+        'exam_total_fees',
+        'training_total_fees',
     ];
 }
 

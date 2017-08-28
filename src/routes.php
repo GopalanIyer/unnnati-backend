@@ -40,7 +40,7 @@ $app->post('/tempexam', function($request, $response) {
             'current_date' => $data['current_date'],
             'amount' => $data['amount'],
             'total_fees_paid' => $data['total_fees_paid'],
-            'total_fees' => $data['total_fees'],
+            'exam_total_fees' => $data['exam_total_fees'],
             'balance_fees' => $data['balance_fees'],
             'mode' => $data['mode'],
             'cheque_no' => $data['cheque_no'],
@@ -68,40 +68,25 @@ $app->delete('/tempexam/{id}', function($request, $response, $args) {
 $app->get('/permatraining/search', function($request, $response) {
     $name = $request->getQueryParams()['student_name'];
     $course = $request->getQueryParams()['course'];
-    //  $course=$request->getAttribute('course');
-//    $arr=explode('|',$name);
-//    $arr[1]=str_replace('%20',' ',$arr[1]);
-   
     $student=\TrainingReciept::orderBy('current_date', 'desc')
                              ->where('student_name',$name)
                              ->where('course', $course)
                              ->first();
     if($student)
     {
-        // $total_fees=$student['total_fees'];
-        // $total_fees_paid=$student['total_fees_paid'];
-        // $amount=$student['amount'];
-        // $total_fees_paid=$total_fees_paid+$amount;
-        // $student['total_fees_paid']=$total_fees_paid;
-        // $balance_fees=$total_fees-$total_fees_paid;
-        // $student['balance_fees'] = $balance_fees;
         return $response->withJson($student);
     }
     else
     {
-        // $response
         return $response->withJson(array('error'=>'Student not found'));
     }
 });
 //Get for temp training
 $app->get('/temptraining', function($request, $response) {
-    
     $temptraining = \TrainingRecieptTemp::get();
-    
     if($temptraining)
     {
         $response->getBody()->write($temptraining->toJson());
-       
     }
     else
     {
@@ -125,7 +110,7 @@ $app->post('/temptraining', function($request, $response) {
             'current_date' => $data['current_date'],
             'amount' => $data['amount'],
             'total_fees_paid' => $data['total_fees_paid'],
-            'total_fees' => $data['total_fees'],
+            'training_total_fees' => $data['training_total_fees'],
             'balance_fees' => $data['balance_fees'],
             'mode' => $data['mode'],
             'cheque_no' => $data['cheque_no'],
@@ -141,53 +126,21 @@ $app->post('/temptraining', function($request, $response) {
 $app->get('/permaexam/search', function($request, $response) {
     $name = $request->getQueryParams()['student_name'];
     $course = $request->getQueryParams()['course'];
-    // $name = $request->getAttribute('student_name');
-    // $name=html_entity_decode($name,ENT_HTML5);
-    // $course=$request->getAttribute('course');
-    // $arr=explode('|',$name);
-    // $arr[1]=str_replace('%20',' ',$arr[1]);
+    // return $response->withJson($course);
     $student=\ExamReciept::orderBy('current_date', 'desc')
                              ->where('student_name',$name)
                             ->where('course', $course)
                             ->first();
-
-    // return $response->withJson($student);
-                           
     if($student)
     {
-    //    $total_fees=$student['total_fees'];
-    //     $total_fees_paid=$student['total_fees_paid'];
-    //     $amount=$student['amount'];
-    //     $total_fees_paid=$total_fees_paid+$amount;
-    //     $student['total_fees_paid']=$total_fees_paid;
-    //     $balance_fees=$total_fees-$total_fees_paid;
-    //     $student['balance_fees'] = $balance_fees;
         return $response->withJson($student);
     }
     else
     {
-        // $response
         return $response->withJson(array('error'=>'Student not found'));
     }
 });
 
-// get perma exam
-$app->get('/permaexam', function($request, $response) {
-    
-    $current_date = $request->getAttribute('current_date');
-    $permaexam = \ExamReciept::orderBy('current_date', 'desc')->first();
-  
-    if($permaexam)
-    {
-        $response->withJson($permaexam);
-       
-    }
-    else
-    {
-        $response->withJson(array('error'=>'No such data available'));
-    }
-    return $response;
-});
 //post details to permanent exam
 $app->post('/permaexam', function($request, $response) {
     
@@ -204,40 +157,17 @@ $app->post('/permaexam', function($request, $response) {
             'current_date' => $data['current_date'],
             'amount' => $data['amount'],
             'total_fees_paid' => $data['total_fees_paid'],
-            'total_fees' => $data['total_fees'],
+            'exam_total_fees' => $data['exam_total_fees'],
             'balance_fees' => $data['balance_fees'],
             'mode' => $data['mode'],
             'cheque_no' => $data['cheque_no'],
             'bank' => $data['bank']
      ));  
      $id = $data['id'];
-     $tempexam = \ExamRecieptTemp::find($id);
-        
-     $tempexam->delete();
-            
-           
+    $tempexam = \ExamRecieptTemp::find($id);
+    $tempexam->delete();
     $permaexam->save();
     $response->getBody()->write($permaexam->toJson());
-    
-
-    return $response;
-
-});
-
-// GET details permanent training
-$app->get('/permatraining', function($request, $response) {
-    
-    $current_date = $request->getAttribute('current_date');
-    $permatraining = \TrainingReciept::orderBy('current_date', 'desc')->first();
-    
-    if($permatraining)
-    {
-        $response->withJson($permatraining);
-    }
-    else
-    {
-         $response->withJson(array('error'=>'No such data available'));
-    }
     return $response;
 });
 
@@ -257,7 +187,7 @@ $app->post('/permatraining', function($request, $response) {
             'current_date' => $data['current_date'],
             'amount' => $data['amount'],
             'total_fees_paid' => $data['total_fees_paid'],
-            'total_fees' => $data['total_fees'],
+            'training_total_fees' => $data['training_total_fees'],
             'balance_fees' => $data['balance_fees'],
             'mode' => $data['mode'],
             'cheque_no' => $data['cheque_no'],
@@ -301,7 +231,8 @@ $app->post('/enquiry', function($request, $response) {
             'course' => $data['course'],
             'source' => $data['source'],
             'branch' => $data['branch'],
-            'total_fees' => $data['total_fees']
+            'exam_total_fees' => $data['exam_total_fees'],
+            'training_total_fees' => $data['training_total_fees'],
             
      ));
      $enquiry->save();
@@ -331,7 +262,6 @@ $app->get('/salary', function($request, $response) {
 });
 // post for salary
 $app->post('/salary', function($request, $response) {
-    // $queryParams = $request->getQueryParams();
     $json = $request->getBody();
     $data = json_decode($json, true);
     $employee_name =$data['employee_name'];
@@ -339,8 +269,6 @@ $app->post('/salary', function($request, $response) {
     $salary = \Salary::where('employee_name', $employee_name)
                             ->where('month', $month)
                             ->first();
-    // $salary = \Salary::orderBy('id', 'desc')->get();
-    // $details = \ExamRecieptTemp::orderBy('id', 'desc')->get();
     if($salary)
     {
         $response->getBody()->write($salary->toJson()); 
@@ -408,11 +336,12 @@ $app->post('/studform', function($request, $response) {
             'email_id' => $data['email_id'],
             'course' => $data['course'],
             'branch' => $data['branch'],
-            'total_fees' => $data['total_fees'],
+            'exam_total_fees' => $data['exam_total_fees'],
+            'training_total_fees' => $data['training_total_fees'],
             'current_date' => $data['current_date'],
             'active' => $data['active']
      ));
-     $studform->save();
+    $studform->save();
     $response->getBody()->write($studform->toJson());
     return $response;
 });
@@ -430,15 +359,15 @@ $app->post('/enquirytostud', function($request, $response) {
             'email_id' => $data['email_id'],
             'course' => $data['course'],
             'branch' => $data['branch'],
-            'total_fees' => $data['total_fees'],
+            'exam_total_fees' => $data['exam_total_fees'],
+            'training_total_fees' => $data['training_total_fees'],
             'current_date' => $data['current_date']
            
      ));
-     $id = $data['id'];
-     $enquiry = \EnquiryForm::find($id);
-        
-     $enquiry->delete();
-     $studform->save();
+    $id = $data['id'];
+    $enquiry = \EnquiryForm::find($id);
+    $enquiry->delete();
+    $studform->save();
     $response->getBody()->write($studform->toJson());
     return $response;
 });
@@ -460,7 +389,6 @@ $app->get('/task', function($request, $response) {
     return $response;
 });
 
-
 // Post details for task tab
 $app->post('/task', function($request, $response) {
    
@@ -469,15 +397,12 @@ $app->post('/task', function($request, $response) {
     $tasktab = new \TaskTab(array(
             
             'current_date' => $data['current_date'],
-           
             'task' => $data['task'],
             'task_type' => $data['task_type']
             
      ));
      $tasktab->save();
     $response->getBody()->write($tasktab->toJson());
-    
-
     return $response;
 });
 
@@ -499,10 +424,7 @@ $app->delete('/task/{id}', function($request, $response, $args) {
 
 // GET for sign up form
 $app->get('/signup', function($request, $response) {
-    // $id = $request->getAttribute('id');
-
     $signup = \SignUp::get();
-    // $details = \ExamRecieptTemp::orderBy('id', 'desc')->get();
     if($signup)
     {
         $response->getBody()->write($signup->toJson());
@@ -519,7 +441,6 @@ $app->post('/signup', function($request, $response) {
    
     $json = $request->getBody();
     $data = json_decode($json, true);
-    // echo $data['student_name'];
     $signup = new \SignUp(array(
             
             'name' => $data['name'],
@@ -537,7 +458,6 @@ $app->post('/signup', function($request, $response) {
 
 //get for login
 $app->post('/login', function($request, $response) {
-    // $queryParams = $request->getQueryParams();
     $json = $request->getBody();
     $data = json_decode($json, true);
     $username =$data['username'];
@@ -554,15 +474,12 @@ $app->post('/login', function($request, $response) {
     else
     {
         $response->getBody()->write('{"status": 404, "message": "Username or Password Incorrect"}');
-
-        // $response
     }
     return $response;
 });
 
 //post for change password
 $app->post('/changepassword', function($request, $response) {
-    // $queryParams = $request->getQueryParams();
     $json = $request->getBody();
     $data = json_decode($json, true);
     $username =$data['username'];
@@ -572,14 +489,10 @@ $app->post('/changepassword', function($request, $response) {
                             ->where('password', $password)
                             ->first();
     if ($change) {
-        // $user = \SignUp::where('username', $change['username'])->first();
-        // echo $user;
-        // fetching POST parameters
         $params = $request->getBody();
         $data = json_decode($params, true);
         $password = $data['password'];
         $newpass = $data['newpass'];
-        // echo $old_pass .'<br>'. $new_pass;
         if ($password == $change['password']) {
             // updating the password and token
             $change->update([
@@ -588,7 +501,6 @@ $app->post('/changepassword', function($request, $response) {
             $change->update([
                 'change' => $change['username'] . $newpass
                 ]);
-            // $user->save();
             $change->save();
             $response->getBody()->write('{ "error": "Password changed successfully"}');
         } else {
